@@ -1,6 +1,7 @@
 name: Build
 
-on: [push]
+on:
+  workflow_dispatch: # 手动触发工作流程
 
 jobs:
   build-linux:
