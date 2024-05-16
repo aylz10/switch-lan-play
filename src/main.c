@@ -1,4 +1,7 @@
 #include "lan-play.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // command-line options
 struct cli_options options;
@@ -6,6 +9,24 @@ struct cli_options options;
 OPTIONS_DEF(socks5_server_addr);
 OPTIONS_DEF(relay_server_addr);
 uv_signal_t signal_int;
+
+char* removeQuotes(const char* str) {
+    int n = strlen(str), i, j;
+    char* newStr = (char*)malloc(sizeof(char) * (n + 1));
+    if (newStr == NULL) {
+        printf("Error: unable to allocate memory.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0, j = 0; i < n; i++) {
+        if (str[i] != '"') {
+            newStr[j++] = str[i];
+        }
+    }
+    newStr[j] = '\0';  // null-terminate string
+
+    return newStr;
+}
 
 int list_interfaces(pcap_if_t *alldevs)
 {
@@ -91,7 +112,7 @@ int parse_arguments(int argc, char **argv)
             options.version = 1;
         } else if (!strcmp(arg, "--netif")) {
             CHECK_PARAM();
-            options.netif = strdup(argv[i + 1]);
+            options.netif = strdup(removeQuotes(argv[i + 1]));
             i++;
         // } else if (!strcmp(arg, "--netif-netmask")) {
         //     CHECK_PARAM();
