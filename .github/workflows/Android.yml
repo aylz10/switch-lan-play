@@ -1,0 +1,111 @@
+name: Android
+
+on:
+  workflow_dispatch: # 手动触发工作流程
+
+jobs:
+  Android-armeabi-v7a:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Setup Android NDK R23
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r21e
+        add-to-path: false
+
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+        
+    - name: build
+      run: |
+        curl -L -o libpcap-1.9.0.tar.gz https://github.com/the-tcpdump-group/libpcap/archive/libpcap-1.9.0.tar.gz
+        tar xvf libpcap-1.9.0.tar.gz
+        cd libpcap-libpcap-1.9.0
+        cmake \
+          -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DANDROID_NDK=${{ steps.setup-ndk.outputs.ndk-path }} \
+          -DANDROID_PLATFORM=android-21 \
+          -DBUILD_SHARED_LIBS=NO \
+          -DCMAKE_INSTALL_PREFIX=${{ steps.setup-ndk.outputs.ndk-path }}/sysroot/usr/local \
+          -DANDROID_ABI=armeabi-v7a .
+        make
+        make install
+        
+        cd ..
+        mkdir build
+        cd build
+        cmake \
+          -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake \
+          -DPCAP_ROOT_DIR=${{ steps.setup-ndk.outputs.ndk-path }}/sysroot/usr/local \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DANDROID_NDK=${{ steps.setup-ndk.outputs.ndk-path }} \
+          -DANDROID_PLATFORM=android-21 \
+          -DBUILD_SHARED_LIBS=NO \
+          -DANDROID_ABI=armeabi-v7a ..
+        make
+        mv ./src/lan-play ./src/lan-play-armeabi-v7a
+
+    - name: upload built files
+      uses: actions/upload-artifact@v1
+      with:
+        name: lan-play-armeabi-v7a
+        # path: ${{ github.workspace }}/build/src/lan-play-armeabi-v7a
+        path: build/src/lan-play-armeabi-v7a
+
+        
+  Android-arm64-v8a:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Setup Android NDK R23
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r21e
+        add-to-path: false
+
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+        
+    - name: build
+      run: |
+        curl -L -o libpcap-1.9.0.tar.gz https://github.com/the-tcpdump-group/libpcap/archive/libpcap-1.9.0.tar.gz
+        tar xvf libpcap-1.9.0.tar.gz
+        cd libpcap-libpcap-1.9.0
+        cmake \
+          -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DANDROID_NDK=${{ steps.setup-ndk.outputs.ndk-path }} \
+          -DANDROID_PLATFORM=android-21 \
+          -DBUILD_SHARED_LIBS=NO \
+          -DCMAKE_INSTALL_PREFIX=${{ steps.setup-ndk.outputs.ndk-path }}/sysroot/usr/local \
+          -DANDROID_ABI=arm64-v8a .
+        make
+        make install
+        
+        cd ..
+        mkdir build
+        cd build
+        cmake \
+          -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake \
+          -DPCAP_ROOT_DIR=${{ steps.setup-ndk.outputs.ndk-path }}/sysroot/usr/local \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DANDROID_NDK=${{ steps.setup-ndk.outputs.ndk-path }} \
+          -DANDROID_PLATFORM=android-21 \
+          -DBUILD_SHARED_LIBS=NO \
+          -DANDROID_ABI=arm64-v8a ..
+        make
+        mv ./src/lan-play ./src/lan-play-arm64-v8a
+
+    - name: upload built files
+      uses: actions/upload-artifact@v1
+      with:
+        name: lan-play-arm64-v8a
+        # path: ${{ github.workspace }}/build/src/lan-play-arm64-v8a
+        path: build/src/lan-play-arm64-v8a
+
