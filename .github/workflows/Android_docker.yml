@@ -1,0 +1,46 @@
+name: Android_docker
+
+on:
+  workflow_dispatch: # 手动触发工作流程
+
+jobs:
+  armv7_build:
+    name: Linux armv7 Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+      
+    - name: Build
+      run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir aylz10/android-ndk /bin/sh -c "cd /root/workdir && chmod +x scripts/Android-armeabi-v7a.sh && bash scripts/Android-armeabi-v7a.sh"
+      
+    - name: upload built files
+      uses: actions/upload-artifact@v1
+      with:
+        name: lan-play-armeabi-v7a
+        # path: ${{ github.workspace }}/build/src/lan-play-armeabi-v7a
+        path: build/src/lan-play-armeabi-v7a
+        
+  aarch64_build:
+    name: Linux aarch64 Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+      
+    - name: Build
+      run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir aylz10/android-ndk /bin/sh -c "cd /root/workdir && chmod +x scripts/Android-arm64-v8a.sh && bash scripts/Android-arm64-v8a.sh"
+      
+    - name: upload built files
+      uses: actions/upload-artifact@v1
+      with:
+        name: lan-play-arm64-v8a
+        # path: ${{ github.workspace }}/build/src/lan-play-arm64-v8a
+        path: build/src/lan-play-arm64-v8a
+        
