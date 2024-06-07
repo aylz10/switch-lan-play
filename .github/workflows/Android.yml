@@ -21,9 +21,9 @@ jobs:
         
     - name: build
       run: |
-        curl -L -o libpcap-1.9.0.tar.gz https://github.com/the-tcpdump-group/libpcap/archive/libpcap-1.9.0.tar.gz
-        tar xvf libpcap-1.9.0.tar.gz
-        cd libpcap-libpcap-1.9.0
+        curl -L -o libpcap-1.10.4.tar.gz https://github.com/the-tcpdump-group/libpcap/archive/libpcap-1.10.4.tar.gz
+        tar xvf libpcap-1.10.4.tar.gz
+        cd libpcap-libpcap-1.10.4
         cmake \
           -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake \
           -DCMAKE_BUILD_TYPE=Release \
@@ -74,9 +74,9 @@ jobs:
         
     - name: build
       run: |
-        curl -L -o libpcap-1.9.0.tar.gz https://github.com/the-tcpdump-group/libpcap/archive/libpcap-1.9.0.tar.gz
-        tar xvf libpcap-1.9.0.tar.gz
-        cd libpcap-libpcap-1.9.0
+        curl -L -o libpcap-1.10.4.tar.gz https://github.com/the-tcpdump-group/libpcap/archive/libpcap-1.10.4.tar.gz
+        tar xvf libpcap-1.10.4.tar.gz
+        cd libpcap-libpcap-1.10.4
         cmake \
           -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake \
           -DCMAKE_BUILD_TYPE=Release \
